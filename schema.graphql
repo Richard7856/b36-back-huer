@@ -1,0 +1,107 @@
+scalar EmailAddress
+scalar URL
+scalar Upload
+directive @auth on FIELD_DEFINITION | FIELD
+
+type Query{
+    getPersons:[Person]!
+    getSinglePerson(id:ID):Person!
+    getSingleBlog(id:ID): Blog!
+    getBlogs:[Blog]!
+    getPlants:[Plant]!
+    getSinglePlant(id:ID):Plant!
+    me: Person!@auth
+}
+ 
+type Mutation{
+    createNewPerson(data:PersonInput!):Person!
+    updateOnePerson(id:ID!, data:PersonInputUpdate!):Person!@auth
+    deleteOnePerson(id:ID!):String!@auth
+    createNewBlog(data:BlogInput!):Blog!@auth
+    updateOneBlog(id:ID!, data:BlogInputUpdate!):Blog!@auth
+    deleteOneBlog(id:ID!):String!@auth
+    createNewPlant(data:PlantInput!):Plant!
+    updateOnePlant(id:ID!, data:PlantInputUpdate!):Plant!@auth
+    deleteOnePlant(id:ID!):String!@auth
+    login(email:EmailAddress!, password: String!): Auth!
+}
+
+type Auth{
+    token: String!
+    message: String!
+}
+
+type Person{
+    _id:ID!
+    first_name:String!
+    last_name:String!
+    email:EmailAddress!
+    blogs:[Blog]!
+    gender: GENDERS
+}
+
+input PersonInput{
+    first_name:String!
+    last_name:String!
+    email:EmailAddress!
+    password: String
+    gender: GENDERS
+}
+
+input PersonInputUpdate{
+    first_name:String
+    last_name:String
+    email:EmailAddress
+    gender: GENDERS
+    is_active:Boolean
+}
+
+type Blog{
+    _id:ID!
+    title: String!
+    content:String!
+    person: Person
+    cover: URL
+    is_active: Boolean
+}
+
+input BlogInput{
+    title: String!
+    content:String!
+    person: ID
+    cover: Upload
+    is_active: Boolean
+}
+
+input BlogInputUpdate{
+    title: String
+    content:String
+    cover: Upload
+    is_active: Boolean
+}
+
+type Plant {
+    _id:ID!
+    name:String!
+    humidity_level: String!
+    temperature: String!
+}
+
+input PlantInput {
+    name:String!
+    humidity_level:String
+    temperature:String
+}
+
+input PlantInputUpdate {
+    name:String
+    humidity_level:String
+    temperature:String
+    is_active:Boolean
+}
+
+enum GENDERS{
+    M
+    F
+    O
+}
